@@ -1,4 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { onAuthStateChanged } from 'firebase/auth'
+import LoginForm from './LoginForm'
+import { auth, logout } from './authService'
 import './App.css'
 
 const NAMES = [
@@ -37,30 +40,38 @@ function generateCodename() {
 }
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [user, setUser] = useState(null)
   const [codename, setCodename] = useState('')
 
-  const handleLogin = () => {
-    const cachedName = localStorage.getItem('codename')
-    if (cachedName) {
-      setCodename(cachedName)
-    } else {
-      const newName = generateCodename()
-      localStorage.setItem('codename', newName)
-      setCodename(newName)
-    }
-
-    setIsLoggedIn(true)
-  }
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser)
+      if (firebaseUser) {
+        const key = `codename_${firebaseUser.uid}`
+        const cached = localStorage.getItem(key)
+        if (cached) {
+          setCodename(cached)
+        } else {
+          const newName = generateCodename()
+          localStorage.setItem(key, newName)
+          setCodename(newName)
+        }
+      } else {
+        setCodename('')
+      }
+    })
+    return () => unsubscribe()
+  }, [])
 
   const handleGenerateNewCodename = () => {
+    if (!user) return
     const newName = generateCodename()
-    localStorage.setItem('codename', newName)
+    localStorage.setItem(`codename_${user.uid}`, newName)
     setCodename(newName)
   }
 
   const handleLogout = () => {
-    setIsLoggedIn(false)
+    logout()
   }
 
   return (
@@ -72,12 +83,11 @@ function App() {
           sinulle uuden.
         </p>
 
-        {!isLoggedIn ? (
-          <button className="button button-primary" onClick={handleLogin}>
-            Kirjaudu sisään
-          </button>
+        {!user ? (
+          <LoginForm />
         ) : (
           <div className="logged-in-view">
+            <p>👋 Tervetuloa, {user.email}</p>
             <p className="label">Sinun koodinimesi</p>
             <p className="codename">{codename}</p>
 
