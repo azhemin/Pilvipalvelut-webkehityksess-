@@ -60,6 +60,13 @@ function App() {
   // 5.2 – real-time listener
   const session = useSession(sessionId);
 
+  // Persist sessionId so the user can return to their game after pressing "back"
+  const saveSession = (id: string | null) => {
+    if (id) localStorage.setItem('last_session', id);
+    else localStorage.removeItem('last_session');
+    setSessionId(id);
+  };
+
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
@@ -69,9 +76,12 @@ function App() {
         const name = cached ?? generateCodename();
         if (!cached) localStorage.setItem(key, name);
         setCodename(name);
+        // Restore last session if any
+        const lastSession = localStorage.getItem('last_session');
+        if (lastSession) setSessionId(lastSession);
       } else {
         setCodename('');
-        setSessionId(null);
+        saveSession(null);
       }
     });
     return () => unsub();
@@ -86,7 +96,7 @@ function App() {
       <JoinOrCreate
         uid={user.uid}
         codename={codename}
-        onSessionJoined={setSessionId}
+        onSessionJoined={saveSession}
       />
     );
   }
@@ -97,7 +107,7 @@ function App() {
       <main className="app">
         <section className="card">
           <p>Ladataan…</p>
-          <button className="button button-ghost" onClick={() => setSessionId(null)}>
+          <button className="button button-ghost" onClick={() => saveSession(null)}>
             Takaisin
           </button>
         </section>
@@ -115,7 +125,7 @@ function App() {
           const product = await fetchRandomProduct();
           await startGame(session.id, product);
         }}
-        onLeave={() => setSessionId(null)}
+        onLeave={() => saveSession(null)}
       />
     );
   }
@@ -156,7 +166,7 @@ function App() {
       <FinalScoreboard
         session={session}
         currentUserId={user.uid}
-        onNewGame={() => setSessionId(null)}
+        onNewGame={() => saveSession(null)}
       />
     );
   }
