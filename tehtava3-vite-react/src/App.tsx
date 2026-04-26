@@ -7,6 +7,7 @@ import {
   submitGuess,
   nextRound,
   endGame,
+  cleanupOldSessions,
 } from './services/gameSessionService';
 import { fetchRandomProduct } from './services/productService';
 import LoginForm from './LoginForm.jsx';
@@ -79,6 +80,8 @@ function App() {
         // Restore last session if any
         const lastSession = localStorage.getItem('last_session');
         if (lastSession) setSessionId(lastSession);
+        // Clean up old/finished sessions in background
+        cleanupOldSessions().catch(console.error);
       } else {
         setCodename('');
         saveSession(null);

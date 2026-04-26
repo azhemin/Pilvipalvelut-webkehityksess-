@@ -7,6 +7,9 @@ import {
   onSnapshot,
   serverTimestamp,
   runTransaction,
+  getDocs,
+  deleteDoc,
+  Timestamp,
 } from 'firebase/firestore';
 import { db } from '../firebase.ts';
 import type { Session } from '../types/Session';
@@ -17,6 +20,24 @@ const SESSIONS = 'sessions';
 
 function generateSessionId(): string {
   return Math.random().toString(36).substring(2, 8).toUpperCase();
+}
+
+// ─────────────────────────────────────────────────────────────
+// Cleanup: delete finished or >24h old sessions
+// ─────────────────────────────────────────────────────────────
+export async function cleanupOldSessions(): Promise<void> {
+  const snap = await getDocs(collection(db, SESSIONS));
+  const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+  const deletes = snap.docs
+    .filter((d) => {
+      const data = d.data();
+      if (data.status === 'finished') return true;
+      const ts: Timestamp | undefined = data.createdAt;
+      if (ts && ts.toMillis() < cutoff) return true;
+      return false;
+    })
+    .map((d) => deleteDoc(doc(db, SESSIONS, d.id)));
+  await Promise.all(deletes);
 }
 
 // ─────────────────────────────────────────────────────────────
