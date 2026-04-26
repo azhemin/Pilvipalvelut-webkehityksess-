@@ -92,11 +92,13 @@ function App() {
 
   // ── Logged in, no session → lobby chooser ─────────────────────────────────
   if (!sessionId) {
+    const lastSession = localStorage.getItem('last_session');
     return (
       <JoinOrCreate
         uid={user.uid}
         codename={codename}
         onSessionJoined={saveSession}
+        lastSessionId={lastSession ?? undefined}
       />
     );
   }
@@ -125,7 +127,7 @@ function App() {
           const product = await fetchRandomProduct();
           await startGame(session.id, product);
         }}
-        onLeave={() => saveSession(null)}
+        onLeave={() => setSessionId(null)}
       />
     );
   }

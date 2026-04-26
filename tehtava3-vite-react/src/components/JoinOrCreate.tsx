@@ -6,9 +6,10 @@ interface JoinOrCreateProps {
   uid: string;
   codename: string;
   onSessionJoined: (sessionId: string) => void;
+  lastSessionId?: string;
 }
 
-export function JoinOrCreate({ uid, codename, onSessionJoined }: JoinOrCreateProps) {
+export function JoinOrCreate({ uid, codename, onSessionJoined, lastSessionId }: JoinOrCreateProps) {
   const [sessionName, setSessionName] = useState('');
   const [joinCode, setJoinCode] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -85,6 +86,20 @@ export function JoinOrCreate({ uid, codename, onSessionJoined }: JoinOrCreatePro
         </div>
 
         {error && <p className="login-error">{error}</p>}
+
+        {lastSessionId && (
+          <div className="game-section" style={{ borderTop: '1px solid #ddd', paddingTop: '1rem' }}>
+            <p style={{ margin: 0, fontSize: '0.9rem', color: '#555' }}>Sinulla on kesken oleva peli:</p>
+            <button
+              className="button button-primary"
+              style={{ background: '#2563eb' }}
+              onClick={() => onSessionJoined(lastSessionId)}
+              disabled={loading}
+            >
+              ▶ Jatka peliä ({lastSessionId})
+            </button>
+          </div>
+        )}
 
         <button className="button button-ghost" onClick={logout} style={{ marginTop: '1rem' }}>
           Kirjaudu ulos
