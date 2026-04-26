@@ -57,7 +57,7 @@ export function SessionLobby({ session, currentUserId, onStartGame, onLeave }: S
               fontWeight: 600,
             }}
           >
-            {copied ? '✅ Kopioitu!' : 'Kopioi pelitunnus'}
+            {copied ? '🌟 Kopioitu!' : 'Kopioi pelitunnus'}
           </button>
         </div>
 
