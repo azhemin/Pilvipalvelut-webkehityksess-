@@ -48,7 +48,7 @@ export function JoinOrCreate({ uid, codename, onSessionJoined }: JoinOrCreatePro
   return (
     <main className="app">
       <section className="card">
-        <h1>Hintavisa 🏷️</h1>
+        <h1 style={{ textAlign: 'center' }}>Hintavisa</h1>
         <p className="lead">
           Pelaajana: <strong>{codename}</strong>
         </p>
