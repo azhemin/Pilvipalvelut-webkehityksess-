@@ -16,6 +16,27 @@ export function QuizForm({ session, currentUserId, currentUserCodename, onSubmit
   const players = Object.values(session.players);
   const guessedCount = players.filter((p) => p.guess !== null).length;
   const myPlayer = session.players[currentUserId];
+  const roundPlayerIds: string[] = session.roundPlayerIds ?? Object.keys(session.players);
+  const isInRound = roundPlayerIds.includes(currentUserId);
+
+  // Late joiner – not part of this round
+  if (!isInRound) {
+    return (
+      <main className="app">
+        <section className="card">
+          <h2>Kierros {session.currentRound}/{session.maxRounds}</h2>
+          <p className="lead">Liityit pelin aikana – odotetaan seuraavaa kierrosta…</p>
+          <ul className="player-list">
+            {players.map((p) => (
+              <li key={p.uid} className="player-item">
+                {p.codename}: {p.guess !== null ? '✅' : '⏳'}
+              </li>
+            ))}
+          </ul>
+        </section>
+      </main>
+    );
+  }
 
   // Waiting screen shown after the player has already submitted
   if (myPlayer?.guess !== null && myPlayer?.guess !== undefined) {

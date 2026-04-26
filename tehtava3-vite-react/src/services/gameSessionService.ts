@@ -49,6 +49,7 @@ export async function createSession(
     scores: { [creatorUid]: 0 },
     players: { [creatorUid]: creatorPlayer },
     roundResolved: false,
+    roundPlayerIds: [] as string[],
     lastActivity: serverTimestamp(),
   } as const;
 
@@ -77,8 +78,9 @@ export async function joinSession(
   if (!snap.exists()) throw new Error('Sessiota ei löydy');
 
   const data = snap.data() as Session;
-  if (data.status !== 'waiting') throw new Error('Peli on jo alkanut');
+  if (data.status === 'finished') throw new Error('Peli on jo päättynyt');
   if (Object.keys(data.players).length >= 4) throw new Error('Sessio on täynnä (max 4 pelaajaa)');
+  if (data.players[uid]) return; // already in session
 
   const player: Player = { uid, codename, guess: null, score: 0 };
   await updateDoc(doc(db, SESSIONS, sessionId), {
@@ -92,6 +94,11 @@ export async function joinSession(
 // 5.3 – Start game (waiting → playing)
 // ─────────────────────────────────────────────────────────────
 export async function startGame(sessionId: string, product: Product): Promise<void> {
+  const snap = await getDoc(doc(db, SESSIONS, sessionId));
+  if (!snap.exists()) throw new Error('Sessiota ei löydy');
+  const data = snap.data() as Session;
+  const roundPlayerIds = Object.keys(data.players);
+
   await updateDoc(doc(db, SESSIONS, sessionId), {
     status: 'playing',
     currentRound: 1,
@@ -99,6 +106,7 @@ export async function startGame(sessionId: string, product: Product): Promise<vo
     productThumbnail: product.thumbnail,
     correctPrice: product.price,
     roundResolved: false,
+    roundPlayerIds,
     lastActivity: serverTimestamp(),
   });
 }
@@ -127,7 +135,9 @@ export async function submitGuess(
       [uid]: { ...data.players[uid], guess },
     };
 
-    const allGuessed = Object.values(updatedPlayers).every((p) => p.guess !== null);
+    // Only wait for players who were in the session when the round started
+    const roundIds: string[] = data.roundPlayerIds ?? Object.keys(data.players);
+    const allGuessed = roundIds.every((pid) => updatedPlayers[pid]?.guess !== null);
 
     const update: Record<string, unknown> = {
       [`players.${uid}.guess`]: guess,
@@ -178,6 +188,7 @@ export async function nextRound(
   Object.entries(data.players).forEach(([pid, p]) => {
     resetPlayers[pid] = { ...p, guess: null };
   });
+  const roundPlayerIds = Object.keys(data.players);
 
   await updateDoc(ref, {
     currentRound: currentRound + 1,
@@ -185,6 +196,7 @@ export async function nextRound(
     productThumbnail: product.thumbnail,
     correctPrice: product.price,
     roundResolved: false,
+    roundPlayerIds,
     players: resetPlayers,
     lastActivity: serverTimestamp(),
   });

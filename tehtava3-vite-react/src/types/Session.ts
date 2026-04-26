@@ -23,5 +23,7 @@ export type Session = {
   players: Record<string, Player>;
   /** Set to true when all players have guessed in the current round */
   roundResolved: boolean;
+  /** UIDs of players who are expected to guess in the current round */
+  roundPlayerIds: string[];
   lastActivity: unknown;
 };
