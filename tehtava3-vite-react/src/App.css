@@ -145,3 +145,99 @@
     width: 100%;
   }
 }
+
+/* ── Game-specific styles ─────────────────────────────────────────────────── */
+
+.button-primary {
+  background: rgba(255, 215, 0, 0.08);
+}
+
+.game-section {
+  margin: 1.5rem 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.game-section h2 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.8;
+  margin: 0;
+}
+
+.player-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.player-item {
+  padding: 0.5rem 0.875rem;
+  border-radius: 6px;
+  background: rgba(255, 215, 0, 0.06);
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  text-align: left;
+}
+
+.product-thumbnail {
+  width: 160px;
+  height: 160px;
+  object-fit: contain;
+  margin: 0.75rem auto;
+  display: block;
+  border-radius: 8px;
+  background: #fff;
+  padding: 0.5rem;
+}
+
+.product-result {
+  margin-bottom: 1rem;
+}
+
+.correct-price {
+  font-size: 1.2rem;
+  margin: 0.4rem 0;
+}
+
+.result-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.result-item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.625rem 0.875rem;
+  border-radius: 6px;
+  background: rgba(255, 215, 0, 0.04);
+  border: 1px solid rgba(255, 215, 0, 0.12);
+  text-align: left;
+}
+
+.result-item.winner {
+  background: rgba(255, 215, 0, 0.14);
+  border-color: rgba(255, 215, 0, 0.5);
+}
+
+.winner-banner {
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin: 0.75rem 0 1.25rem;
+}
+
+.hint {
+  font-size: 0.875rem;
+  opacity: 0.65;
+  margin: 0;
+}
