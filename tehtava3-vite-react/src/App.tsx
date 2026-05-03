@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { onAuthStateChanged, type User } from 'firebase/auth';
 import { auth, logout } from './authService.js';
+import ConsentBanner from './components/ConsentBanner';
+import useCloudflareAnalytics from './hooks/useCloudflareAnalytics';
 import { useSession } from './hooks/useSession';
 import {
   startGame,
@@ -50,6 +52,23 @@ function generateCodename(): string {
   const a = ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)];
   const s = SUFFIXES[Math.floor(Math.random() * SUFFIXES.length)];
   return `${a}${n}${s}`;
+}
+
+// ── Cloudflare Analytics page view tracker ───────────────────────────────────
+function RouteAnalytics() {
+  const { trackEvent } = useCloudflareAnalytics();
+  const initialReferrer = useRef<string>(
+    document.referrer || 'direct'
+  );
+
+  useEffect(() => {
+    trackEvent('page_view', {
+      referrer: initialReferrer.current,
+      landingPath: window.location.pathname,
+    });
+  }, [trackEvent]);
+
+  return null;
 }
 
 // ── App ───────────────────────────────────────────────────────────────────────
@@ -179,4 +198,14 @@ function App() {
   return null;
 }
 
-export default App;
+function AppWithAnalytics() {
+  return (
+    <>
+      <RouteAnalytics />
+      <App />
+      <ConsentBanner />
+    </>
+  );
+}
+
+export default AppWithAnalytics;
