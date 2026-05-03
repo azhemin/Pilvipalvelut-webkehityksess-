@@ -6,10 +6,27 @@
   <title>Viikko 6 – Cloudflare Web Analytics</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    .tasks-section p {
+    .text-box {
       max-width: 700px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: rgba(255, 215, 0, 0.05);
+      border: 2px solid #ffd700;
+      border-radius: 0.75rem;
+      line-height: 1.8;
       word-wrap: break-word;
-      line-height: 1.7;
+    }
+    .text-box h2 {
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .text-box h2:first-child {
+      margin-top: 0;
+    }
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-bottom: 1rem;
     }
   </style>
 </head>
@@ -18,33 +35,32 @@
     <h1>Viikko 6 – Cloudflare Web Analytics</h1>
 
     <div class="content-wrapper">
-      <div class="tasks-section">
-        <p><a href="index.html">← Takaisin etusivulle</a></p>
+    <p class="back-link"><a href="index.html">← Takaisin etusivulle</a></p>
 
-        <h2>Mihin verkkoanalytiikkaa voisi hyödyntää?</h2>
+    <div class="text-box">
+      <h2>Mihin verkkoanalytiikkaa voisi hyödyntää?</h2>
 
-        <p>
-          Cloudflare Web Analytics kerää yksityisyyttä kunnioittavaa käyttödataa ilman evästeitä.
-          Seurantaa voi hyödyntää useilla tavoilla. Ensinnäkin se paljastaa, mitkä sivut tai toiminnot
-          kiinnostavat käyttäjiä eniten – esimerkiksi millä pelisessioiden vaiheella pelaajat
-          lopettavat pelin, mikä auttaa parantamaan käyttökokemusta. Toiseksi sivuston latausaikojen
-          ja Core Web Vitals -mittareiden seuranta auttaa tunnistamaan suorituskykyongelmat ennen kuin
-          ne haittaavat käyttäjiä. Kolmanneksi geografisten alueiden ja laitetyyppien analyysi ohjaa
-          mobiilioptimointia ja kieliversioiden priorisointia. Sovelluksen virhekirjauksiin yhdistettynä
-          analytiikka kertoo, missä ympäristöissä bugeja esiintyy eniten.
-        </p>
+      <p>
+        Cloudflare Web Analytics kerää yksityisyyttä kunnioittavaa käyttödataa ilman evästeitä.
+        Seurantaa voi hyödyntää useilla tavoilla. Ensinnäkin se paljastaa, mitkä sivut tai toiminnot
+        kiinnostavat käyttäjiä eniten – esimerkiksi millä pelisessioiden vaiheella pelaajat
+        lopettavat pelin, mikä auttaa parantamaan käyttökokemusta. Toiseksi sivuston latausaikojen
+        ja Core Web Vitals -mittareiden seuranta auttaa tunnistamaan suorituskykyongelmat ennen kuin
+        ne haittaavat käyttäjiä. Kolmanneksi geografisten alueiden ja laitetyyppien analyysi ohjaa
+        mobiilioptimointia ja kieliversioiden priorisointia. Sovelluksen virhekirjauksiin yhdistettynä
+        analytiikka kertoo, missä ympäristöissä bugeja esiintyy eniten.
+      </p>
 
-        <h2>CORS-ongelman välttäminen</h2>
+      <h2>CORS-ongelman välttäminen</h2>
 
-        <p>
-          CORS (Cross-Origin Resource Sharing) tulee vastaan, kun selain estää pyynnön toiselle
-          domainille. Yleinen ratkaisu on asettaa palvelimelle oikeat
-          <code>Access-Control-Allow-Origin</code> -otsikot. GitHub Pagesin kanssa staattiset resurssit
-          kannattaa sijoittaa samaan originiin tai käyttää Cloudflaren proxya, joka lisää tarvittavat
-          otsikot automaattisesti. Cloudflare Workers voidaan myös asettaa välityspalvelimeksi, jolloin
-          CORS-otsikot lisätään ennen vastausta selaimelle ilman muutoksia taustajärjestelmään.
-        </p>
-      </div>
+      <p>
+        CORS (Cross-Origin Resource Sharing) tulee vastaan, kun selain estää pyynnön toiselle
+        domainille. Yleinen ratkaisu on asettaa palvelimelle oikeat
+        <code>Access-Control-Allow-Origin</code> -otsikot. GitHub Pagesin kanssa staattiset resurssit
+        kannattaa sijoittaa samaan originiin tai käyttää Cloudflaren proxya, joka lisää tarvittavat
+        otsikot automaattisesti. Cloudflare Workers voidaan myös asettaa välityspalvelimeksi, jolloin
+        CORS-otsikot lisätään ennen vastausta selaimelle ilman muutoksia taustajärjestelmään.
+      </p>
     </div>
   </div>
 </body>
